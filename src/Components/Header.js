@@ -60,7 +60,7 @@ const Header = (props) => {
               </NavList>
 
               <User>
-                <a>
+                <a href="/">
                   {props.user && props.user.photoURL ? <img src={props.user.photoURL} alt="" /> : <img src="/images/user.svg" alt="" />}
 
                   <span>Me
@@ -68,7 +68,7 @@ const Header = (props) => {
                 </a>
 
                 <SignOut onClick={()=>props.signOut()}>
-                  <a>Sign Out</a>
+                  <a href="/">Sign Out</a>
                 </SignOut>
               </User>
 
