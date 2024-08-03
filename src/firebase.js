@@ -4,17 +4,18 @@ import { getAuth, GoogleAuthProvider,signInWithPopup} from 'firebase/auth';
 import { getStorage } from 'firebase/storage';
 
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCzqoDyoElI4GH51zG_KMuLMnzvFqh787g",
-  authDomain: "linkedin-clone-94e4d.firebaseapp.com",
-  projectId: "linkedin-clone-94e4d",
-  storageBucket: "linkedin-clone-94e4d.appspot.com",
-  messagingSenderId: "639561274020",
-  appId: "1:639561274020:web:7e6bc082f7831cc7f1cc31",
-  measurementId: "G-2SMB41J4TL"
-};
 
-// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyAkdlykY-zUTXxoWzcLHVTQlGgKrusFaz0",
+  authDomain: "linkedin-clone-f2ab6.firebaseapp.com",
+  projectId: "linkedin-clone-f2ab6",
+  storageBucket: "linkedin-clone-f2ab6.appspot.com",
+  messagingSenderId: "866736504041",
+  appId: "1:866736504041:web:ca3a0793b699d2fa6f8478",
+  measurementId: "G-HKLPBGE090"
+};
+ 
+
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
