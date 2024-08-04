@@ -1,18 +1,24 @@
 import styled from "styled-components";
 import PostModel from "./PostModel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { getArticlesAPI } from "../actions";
+import PropTypes from "prop-types";
 
 const Main = (props) => {
 
-  const [showModel,setShowModel]=useState("close");
+  const [showModel, setShowModel] = useState("close");
+  useEffect(()=>{
+    props.getArticles();
+  },[]);
 
-  const handelClick=(e)=>{
+  const handelClick = (e) => {
     e.preventDefault();
-    if(e.target!==e.currentTarget){
+    if (e.target !== e.currentTarget) {
       return;
     }
 
-    switch (showModel){
+    switch (showModel) {
       case "open":
         setShowModel("close");
         break;
@@ -24,32 +30,38 @@ const Main = (props) => {
         break;
     }
   }
-  
+
   return <Container>
     <ShareBox>
       <div>
-        <img src="/images/user.svg" alt=""/>
-        <button onClick={handelClick}>Start a Post</button>
+        {
+          props.user && props.user.photoURL ? <img src={props.user.photoURL} alt="" /> : <img src="/images/user.svg" alt="" />
+        }
+
+        <button onClick={handelClick} disabled={props.loading ? true : false}>Start a Post</button>
       </div>
 
       <div>
         <button>
-          <img src="/images/photo-icon.png" alt=""/>
+          <img src="/images/photo-icon.png" alt="" />
           <span>Media</span>
         </button>
 
         <button>
-          <img src="/images/event-icon.png" alt=""/>
+          <img src="/images/event-icon.png" alt="" />
           <span>Event</span>
         </button>
 
         <button>
-          <img src="/images/article-icon.png" alt=""/>
+          <img src="/images/article-icon.png" alt="" />
           <span>Write Article</span>
         </button>
       </div>
     </ShareBox>
-    <div>
+    <Content>
+      {
+        props.loading && <img src="/images/gear-spinner.svg" alt=""></img>
+      }
       <Article>
         <SharedActor>
           <a href="8">
@@ -73,8 +85,8 @@ const Main = (props) => {
         <SocialCounts>
           <li>
             <button>
-              <img src="/images/thumb-img.svg" alt=""/>
-              <img src="/images/clap-img.svg" alt=""/>
+              <img src="/images/thumb-img.svg" alt="" />
+              <img src="/images/clap-img.svg" alt="" />
               <span>75</span>
             </button>
           </li>
@@ -84,28 +96,28 @@ const Main = (props) => {
         </SocialCounts>
         <SocialActions>
           <button>
-            <img src="/images/like.svg" alt=""/>
+            <img src="/images/like.svg" alt="" />
             <span>Like</span>
           </button>
 
           <button>
-            <img src="/images/comment.svg" alt=""/>
+            <img src="/images/comment.svg" alt="" />
             <span>Comments</span>
           </button>
 
           <button>
-            <img src="/images/repost.svg" alt=""/>
+            <img src="/images/repost.svg" alt="" />
             <span>Repost</span>
           </button>
 
           <button>
-            <img src="/images/send.svg" alt=""/>
+            <img src="/images/send.svg" alt="" />
             <span>Send</span>
           </button>
         </SocialActions>
       </Article>
-    </div>
-    <PostModel showModel={showModel} handelClick={handelClick}/>
+    </Content>
+    <PostModel showModel={showModel} handelClick={handelClick} />
 
   </Container>;
 };
@@ -253,7 +265,7 @@ const SharedActor = styled.div`
   }
 `;
 
-const Description=styled.div`
+const Description = styled.div`
   padding: 0 16px;
   overflow: hidden;
   color: rgba(0,0,0,0.9);
@@ -261,7 +273,7 @@ const Description=styled.div`
   text-align: left;
 `;
 
-const SharedImg=styled.div`
+const SharedImg = styled.div`
   margin-top: 8px;
   width: 100%;
   display: block;
@@ -274,7 +286,7 @@ const SharedImg=styled.div`
   }
 `;
 
-const SocialCounts=styled.ul`
+const SocialCounts = styled.ul`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -298,7 +310,7 @@ const SocialCounts=styled.ul`
   }
 `;
 
-const SocialActions=styled.div`
+const SocialActions = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -322,5 +334,26 @@ const SocialActions=styled.div`
     }
   }
 `;
+const Content = styled.div`
+  text-align: center;
+  &>img{
+    width: 30px;
+  }
+`;
 
-export default Main;
+Main.propTypes = {
+  getArticles: PropTypes.func.isRequired,
+}; 
+
+const mapStateToProps = (state) => {
+  return {
+    loading: state.articleState.loading,
+    user: state.userState.user,
+    articles:state.articleState.articles,
+  }
+}
+const mapDispatchToProps = (dispatch) => ({
+  getArticles:()=>dispatch(getArticlesAPI())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
