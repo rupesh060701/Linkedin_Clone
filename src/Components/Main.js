@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getArticlesAPI } from "../actions";
 import PropTypes from "prop-types";
+import ReactPlayer from "react-player";
 
 const Main = (props) => {
 
   const [showModel, setShowModel] = useState("close");
-  useEffect(()=>{
+  useEffect(() => {
     props.getArticles();
-  },[]);
+  }, []);
 
   const handelClick = (e) => {
     e.preventDefault();
@@ -62,60 +63,70 @@ const Main = (props) => {
       {
         props.loading && <img src="/images/gear-spinner.svg" alt=""></img>
       }
-      <Article>
-        <SharedActor>
-          <a href="8">
-            <img src="/images/user.svg" alt=""></img>
-            <div>
-              <span>Title</span>
-              <span>Info</span>
-              <span>Date</span>
-            </div>
-          </a>
-          <button>
-            <img src="/images/ellipsis.svg" alt=""></img>
-          </button>
-        </SharedActor>
-        <Description>Description</Description>
-        <SharedImg>
-          <a href="8">
-            <img src="/images/post1-img.jpeg" alt=""></img>
-          </a>
-        </SharedImg>
-        <SocialCounts>
-          <li>
-            <button>
-              <img src="/images/thumb-img.svg" alt="" />
-              <img src="/images/clap-img.svg" alt="" />
-              <span>75</span>
-            </button>
-          </li>
-          <li>
-            2 Comments
-          </li>
-        </SocialCounts>
-        <SocialActions>
-          <button>
-            <img src="/images/like.svg" alt="" />
-            <span>Like</span>
-          </button>
+      {
+        props.articles.map((article, key) => (
 
-          <button>
-            <img src="/images/comment.svg" alt="" />
-            <span>Comments</span>
-          </button>
 
-          <button>
-            <img src="/images/repost.svg" alt="" />
-            <span>Repost</span>
-          </button>
+          <Article key={key}>
+            <SharedActor>
+              <a href="/">
+                <img src={article.actor.image} alt=""></img>
+                <div>
+                  <span>{article.actor.title}</span>
+                  <span>{article.actor.description}</span>
+                  <span>{article.actor.date.toDate().toLocaleDateString()}</span>
+                </div>
+              </a>
+              <button>
+                <img src="/images/ellipsis.svg" alt=""></img>
+              </button>
+            </SharedActor>
+            <Description>{article.description}</Description>
+            <SharedImg>
+              <a href="/">
+                {
+                  !article.sharedImg && article.video ?
+                    <ReactPlayer width={"100%"} url={article.video} />
+                    :article.sharedImg && <img alt="" src={article.sharedImg}></img>
+                }
+              </a>
+            </SharedImg>
+            <SocialCounts>
+              <li>
+                <button>
+                  <img src="/images/thumb-img.svg" alt="" />
+                  <img src="/images/clap-img.svg" alt="" />
+                  <span>75</span>
+                </button>
+              </li>
+              <li>
+                {article.comments}
+              </li>
+            </SocialCounts>
+            <SocialActions>
+              <button>
+                <img src="/images/like.svg" alt="" />
+                <span>Like</span>
+              </button>
 
-          <button>
-            <img src="/images/send.svg" alt="" />
-            <span>Send</span>
-          </button>
-        </SocialActions>
-      </Article>
+              <button>
+                <img src="/images/comment.svg" alt="" />
+                <span>Comments</span>
+              </button>
+
+              <button>
+                <img src="/images/repost.svg" alt="" />
+                <span>Repost</span>
+              </button>
+
+              <button>
+                <img src="/images/send.svg" alt="" />
+                <span>Send</span>
+              </button>
+            </SocialActions>
+          </Article>
+        ))
+      }
     </Content>
     <PostModel showModel={showModel} handelClick={handelClick} />
 
@@ -343,17 +354,17 @@ const Content = styled.div`
 
 Main.propTypes = {
   getArticles: PropTypes.func.isRequired,
-}; 
+};
 
 const mapStateToProps = (state) => {
   return {
     loading: state.articleState.loading,
     user: state.userState.user,
-    articles:state.articleState.articles,
+    articles: state.articleState.articles,
   }
 }
 const mapDispatchToProps = (dispatch) => ({
-  getArticles:()=>dispatch(getArticlesAPI())
+  getArticles: () => dispatch(getArticlesAPI())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);
